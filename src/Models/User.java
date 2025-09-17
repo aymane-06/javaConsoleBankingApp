@@ -1,20 +1,22 @@
 package Models;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 public class User {
-    private UUID id;
+    private final UUID id;
     private String fullName;
     private String email;
     private String address;
     private String passwordHash;
 
-    public User(String fullName, String email, String address, String passwordHash) {
+    public User(String fullName, String email, String address, String password) {
         this.id = UUID.randomUUID();
         this.fullName = fullName;
         this.email = email;
         this.address = address;
-        this.passwordHash = passwordHash;
+        this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public UUID getId() {
