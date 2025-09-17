@@ -1,0 +1,20 @@
+Collection
+ ├── List (ordered, duplicates allowed)
+ │     ├── ArrayList
+ │     ├── LinkedList
+ │     └── Vector
+ │
+ ├── Set (unique elements, no duplicates)
+ │     ├── HashSet (hash table,Order of elements is not guaranteed)
+ │     ├── LinkedHashSet (hash table,Maintains insertion order)
+ │     └── TreeSet (Red-Black tree)
+ │
+ └── Queue (FIFO, processing order)
+       ├── LinkedList
+       ├── PriorityQueue
+       └── Deque (ArrayDeque, LinkedList)
+
+Map (key-value pairs, not part of Collection,No duplicate keys allowed)
+ ├── HashMap (hash table,Order of elements is not guaranteed)
+ ├── LinkedHashMap((hash table,Maintains insertion order)
+ └── TreeMap (Red-Black tree,Maintains insertion order ,Does not allow null keys (but values can be null)
