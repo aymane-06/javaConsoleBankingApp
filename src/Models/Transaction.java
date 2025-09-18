@@ -19,7 +19,7 @@ public class Transaction {
     private final String accountId;
     private final TransactionType type;
     private final BigDecimal amount;
-    private final Optional<String> counterpartyAccountId;
+    private final String counterpartyAccountId;
     private final String description;
 
     public Transaction(String accountId, TransactionType type, BigDecimal amount, String counterpartyAccountId, String description) {
@@ -28,7 +28,7 @@ public class Transaction {
         this.accountId = accountId;
         this.type = type;
         this.amount = amount.setScale(2, RoundingMode.HALF_UP);
-        this.counterpartyAccountId = Optional.ofNullable(counterpartyAccountId);
+        this.counterpartyAccountId = counterpartyAccountId;
         this.description = description;
     }
 
@@ -43,21 +43,20 @@ public class Transaction {
 
     public BigDecimal getAmount() { return amount; }
 
-    public Optional<String> getCounterpartyAccountId() { return counterpartyAccountId; }
+    public String getCounterpartyAccountId() { return counterpartyAccountId; }
 
     public String getDescription() { return description; }
 
     @Override
     public String toString() {
-        return "Transaction{" +
+        return "Transaction : " +
                 "id=" + id +
                 ", timestamp=" + timestamp +
                 ", accountId='" + accountId + '\'' +
                 ", type=" + type +
                 ", amount=" + amount +
                 ", counterpartyAccountId='" + counterpartyAccountId + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+                ", description='" + description + '\'';
     }
 }
 

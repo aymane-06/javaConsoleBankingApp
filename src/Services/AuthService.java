@@ -2,7 +2,7 @@ package Services;
 
 import Models.User;
 
-import Repositories.Implémentations.InMemoryUserRepository;
+import Repositories.Implementations.InMemoryUserRepository;
 import Utils.ConsoleUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -61,8 +61,25 @@ public class AuthService {
         } else return "Invalid password.";
     }
 
-    public static User logout() {
-        return authenticatedUser=null;
+    public static void logout() {
+        authenticatedUser = null;
+    }
+    
+    public static void changePassword(){
+        User user = authenticatedUser;
+        if (user == null) {
+            System.out.println("You are not logged in.");
+        }
+        String newPassword;
+        while (true) {
+            newPassword = ConsoleUtils.readString("New Password (min 6 chars): ");
+            if (newPassword.length() >= 6) break;
+            System.out.println("Password must be at least 6 chars.");
+        }
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        InMemoryUserRepository.update(user,hashedPassword);
+
+         System.out.println("Password changed successfully.");
     }
 
 

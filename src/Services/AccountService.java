@@ -5,7 +5,6 @@ import Models.User;
 import Repositories.Implementations.InMemoryAccountRepository;
 
 import Utils.ConsoleUtils;
-import Utils.AmountUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,7 +14,7 @@ import static Models.Account.AccountType.*;
 
 public class AccountService {
 
-    private final InMemoryAccountRepository accountRepository=InMemoryAccountRepository.getInstance();
+    private static final InMemoryAccountRepository accountRepository=InMemoryAccountRepository.getInstance();
 
 
     // 1️⃣ Create a new account
@@ -77,95 +76,16 @@ public class AccountService {
         return;
     }
 
-    // 3️⃣ Deposit into an account
-    public void deposit() {
-        if(AuthService.authenticatedUser==null){
-            System.out.println("User is not logged in");
-            return;
-        }
-        User user=AuthService.authenticatedUser;
-        List<Account> userAccounts=accountRepository.findByOwnerId(user.getId());
 
-        if (userAccounts.isEmpty()) {
-            System.out.println("No accounts found for this user.");
-            return;
-        }
-        System.out.println("Select Account for " + user.getFullName() + " Deposit :");
-        for(int i=0;i<userAccounts.size();i++){
-            Account acc=userAccounts.get(i);
-            System.out.println((i+1) + ") Account ID: " + acc.getAccountId()
-                    + " | Type: " + acc.getType() + " | Balance: " + acc.getBalance());
 
-        }
-        int choice = ConsoleUtils.readInt("Pick an account: ", 1, userAccounts.size());
-        Account account = userAccounts.get(choice - 1);
-
-        BigDecimal amount = ConsoleUtils.readPositiveBigDecimal("Deposit amount: ");
-
-        account.deposit(amount);
-
-        System.out.println("Deposit of " + amount + " successful. New balance: " + account.getBalance());
-
-        return;
-    }
-
-    // 4️⃣ Withdraw from an account
-    public void withdraw() {
-        if(AuthService.authenticatedUser==null){
-            System.out.println("User is not logged in");
-            return;
-        }
-        User user=AuthService.authenticatedUser;
-        List<Account> userAccounts=accountRepository.findByOwnerId(user.getId());
-
-        if (userAccounts.isEmpty()) {
-            System.out.println("No accounts found for this user.");
-            return;
-        }
-        System.out.println("Select Account for " + user.getFullName() + " Deposit :");
-        for(int i=0;i<userAccounts.size();i++){
-            Account acc=userAccounts.get(i);
-            System.out.println((i+1) + ") Account ID: " + acc.getAccountId()
-                    + " | Type: " + acc.getType() + " | Balance: " + acc.getBalance());
-
-        }
-        int choice = ConsoleUtils.readInt("Pick an account: ", 1, userAccounts.size());
-        Account account = userAccounts.get(choice - 1);
-
-        BigDecimal amount = ConsoleUtils.readPositiveBigDecimal("Withdrawal amount: ");
-
-        if (AmountUtils.hasSufficientBalance(account.getBalance(), amount)) {
-            account.withdraw(amount);
-            System.out.println("Withdrawal successful. New balance: " + account.getBalance());
-        } else {
-            System.out.println("Insufficient balance!");
-        }
-        return;
-    }
 
     // 5️⃣ Close an account
     public void closeAccount() {
-        if(AuthService.authenticatedUser==null){
-            System.out.println("User is not logged in");
+
+        Account account=getAccount();
+        if (account == null) {
             return;
         }
-        User user=AuthService.authenticatedUser;
-        List<Account> userAccounts=accountRepository.findByOwnerId(user.getId());
-
-        if (userAccounts.isEmpty()) {
-            System.out.println("No accounts found for this user.");
-            return;
-        }
-        System.out.println("Select Account for " + user.getFullName() + " Deposit :");
-        for(int i=0;i<userAccounts.size();i++){
-            Account acc=userAccounts.get(i);
-            System.out.println((i+1) + ") Account ID: " + acc.getAccountId()
-                    + " | Type: " + acc.getType() + " | Balance: " + acc.getBalance());
-
-        }
-        int choice = ConsoleUtils.readInt("Pick an account: ", 1, userAccounts.size());
-        Account account = userAccounts.get(choice - 1);
-
 
         if (!account.getBalance().equals(BigDecimal.ZERO)) {
             System.out.println("Account cannot be closed. Balance must be zero.");
@@ -176,17 +96,30 @@ public class AccountService {
         return;
     }
 
-    // 6️⃣ Find account by ID and check owner
-    public Optional<Account> findAccountById(String accountId, String ownerEmail) {
-        Optional<Account> accountOpt = accountRepository.findById(accountId);
-        if (accountOpt.isEmpty()) return Optional.empty();
-        Account acc = accountOpt.get();
-        if (!acc.getOwnerEmail().equals(ownerEmail)) {
-            System.out.println("You are not the owner of this account!");
-            return Optional.empty();
+    public static Account getAccount() {
+        if(AuthService.authenticatedUser==null){
+            System.out.println("User is not logged in");
+            return null;
         }
-        return Optional.of(acc);
+        User user=AuthService.authenticatedUser;
+        List<Account> userAccounts=accountRepository.findByOwnerId(user.getId());
+
+        if (userAccounts.isEmpty()) {
+            System.out.println("No accounts found for this user.");
+            return null;
+        }
+        System.out.println("Select Account for " + user.getFullName() + " Deposit :");
+        for(int i=0;i<userAccounts.size();i++){
+            Account acc=userAccounts.get(i);
+            System.out.println((i+1) + ") Account ID: " + acc.getAccountId()
+                    + " | Type: " + acc.getType() + " | Balance: " + acc.getBalance());
+
+        }
+        int choice = ConsoleUtils.readInt("Pick an account: ", 1, userAccounts.size());
+        return userAccounts.get(choice - 1);
     }
+
+
 
 
 

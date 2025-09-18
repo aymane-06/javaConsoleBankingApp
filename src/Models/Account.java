@@ -74,6 +74,13 @@ public class Account {
     public  void withdraw(BigDecimal amount) {
         this.balance = this.balance.subtract(amount);
     }
+    public void transfer(BigDecimal amount, Account destination) {
+        this.balance = this.balance.subtract(amount);
+        destination.deposit(amount);
+    }
+    public void transfer(BigDecimal amount, String RIB) {
+        this.balance = this.balance.subtract(amount);
+    }
 
     @Override
     public String toString() {

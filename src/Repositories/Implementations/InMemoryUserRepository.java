@@ -1,4 +1,4 @@
-package Repositories.Implémentations;
+package Repositories.Implementations;
 
 import Models.User;
 import Repositories.Interfaces.UserRepository;
@@ -6,7 +6,7 @@ import Repositories.Interfaces.UserRepository;
 import java.util.*;
 
 public class InMemoryUserRepository implements UserRepository {
-    private static final Set<User> users = new HashSet<>();
+    public static final Set<User> users = new HashSet<>();
     private static InMemoryUserRepository instance;
 
     private InMemoryUserRepository() {}
@@ -27,6 +27,13 @@ public class InMemoryUserRepository implements UserRepository {
        else {
            return "This User Email already exists! ";
        }
+
+    }
+    public static void update(User user, String newHashedPassword){
+        users.stream()
+                .filter(u -> u.getId().equals(user.getId()))
+                .findFirst()
+                .ifPresent(u -> u.setPasswordHash(newHashedPassword));
 
     }
 
